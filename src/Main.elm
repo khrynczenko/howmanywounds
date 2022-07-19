@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Browser exposing (element)
-import Html exposing (Html, br, button, div, form, h1, input, label, text)
+import Html exposing (Html, br, button, div, form, h1, input, label, table, td, text, th, tr)
 import Html.Attributes exposing (class, for, id, name, type_)
 import Html.Events exposing (onClick, onInput)
 
@@ -64,9 +64,9 @@ initialModel =
 
 
 view : Model -> Html Msg
-view _ =
+view model =
     div [ class "content" ]
-        [ viewForm ]
+        [ viewForm, viewDamageTable model ]
 
 
 viewForm : Html Msg
@@ -118,6 +118,38 @@ viewForm =
                 , label [ for "damage" ] [ text "Damage:", br [] [] ]
                 , input [ type_ "number", id "damage", name "damage", onInput (changeStat Damage) ] []
                 , br [] []
+                ]
+            ]
+        ]
+
+
+viewDamageTable : Model -> Html Msg
+viewDamageTable model =
+    div []
+        [ table []
+            [ tr []
+                [ th [] [ text "Save" ]
+                , th [] [ text "Damage" ]
+                ]
+            , tr []
+                [ td [] [ text "2+" ]
+                , td [] [ text <| String.fromInt model.damage ]
+                ]
+            , tr []
+                [ td [] [ text "3+" ]
+                , td [] [ text <| String.fromInt model.damage ]
+                ]
+            , tr []
+                [ td [] [ text "4+" ]
+                , td [] [ text <| String.fromInt model.damage ]
+                ]
+            , tr []
+                [ td [] [ text "5+" ]
+                , td [] [ text <| String.fromInt model.damage ]
+                ]
+            , tr []
+                [ td [] [ text "6+" ]
+                , td [] [ text <| String.fromInt model.damage ]
                 ]
             ]
         ]
