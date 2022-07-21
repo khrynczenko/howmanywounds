@@ -1,12 +1,80 @@
 module Main exposing (main)
 
 import Browser exposing (element)
-import Html exposing (Html, br, button, div, form, h1, input, label, table, td, text, th, tr)
+import Html exposing (Html, br, div, form, h1, input, label, table, td, text, th, tr)
 import Html.Attributes exposing (class, for, id, name, type_)
-import Html.Events exposing (onClick, onInput)
+import Html.Events exposing (onInput)
 
 
-type alias WarscrollStats =
+type alias Save =
+    Int
+
+
+type alias Damage =
+    Int
+
+
+type alias Unit =
+    { modelCount : Int
+    , warscroll : Warscroll
+    }
+
+
+setWarscroll : Model -> Warscroll -> Model
+setWarscroll model warscroll =
+    { model | warscroll = warscroll }
+
+
+convertStatToProbability : Int -> Float
+convertStatToProbability stat =
+    case stat of
+        1 ->
+            1.0
+
+        2 ->
+            0.84
+
+        3 ->
+            0.67
+
+        4 ->
+            0.5
+
+        5 ->
+            0.33
+
+        6 ->
+            0.17
+
+        _ ->
+            0.0
+
+
+calculateDamage : Unit -> Save -> Float
+calculateDamage unit enemySave =
+    let
+        attacks =
+            toFloat unit.warscroll.attacks
+
+        toHit =
+            convertStatToProbability unit.warscroll.toHit
+
+        toWound =
+            convertStatToProbability unit.warscroll.toWound
+
+        rend =
+            unit.warscroll.rend
+
+        damage =
+            toFloat unit.warscroll.damage
+
+        enemySaveProb =
+            convertStatToProbability (enemySave + rend)
+    in
+    toFloat unit.modelCount * attacks * ((toHit * toWound * damage) * (1 - enemySaveProb))
+
+
+type alias Warscroll =
     { attacks : Int
     , toHit : Int
     , toWound : Int
@@ -16,28 +84,33 @@ type alias WarscrollStats =
 
 
 type alias Model =
-    WarscrollStats
+    Unit
 
 
-type Stat
-    = Attacks
+type UnitStat
+    = Models
+    | Attacks
     | ToHit
     | ToWound
     | Rend
     | Damage
 
 
-type WarscrollFormChanged
-    = AttacksChanged Int
+type UnitFormChanged
+    = ModelCountChanged Int
+    | AttacksChanged Int
     | ToHitChanged Int
     | ToWoundChanged Int
     | RendChanged Int
     | DamageChanged Int
 
 
-changeStat : Stat -> String -> WarscrollFormChanged
+changeStat : UnitStat -> String -> UnitFormChanged
 changeStat stat formText =
     case stat of
+        Models ->
+            ModelCountChanged (Maybe.withDefault 0 (String.toInt formText))
+
         Attacks ->
             AttacksChanged (Maybe.withDefault 0 (String.toInt formText))
 
@@ -55,12 +128,21 @@ changeStat stat formText =
 
 
 type alias Msg =
-    WarscrollFormChanged
+    UnitFormChanged
 
 
-initialModel : WarscrollStats
+initialModel : Model
 initialModel =
-    { attacks = 0, toHit = 0, toWound = 0, rend = 0, damage = 0 }
+    { modelCount = 0
+    , warscroll =
+        { attacks = 0
+        , toHit = 0
+        , toWound = 0
+        , rend =
+            0
+        , damage = 0
+        }
+    }
 
 
 view : Model -> Html Msg
@@ -75,7 +157,17 @@ viewForm =
         [ h1 [] [ text "How Many Wounds" ]
         , div []
             [ form []
-                [ label [ for "attacks" ] [ text "Attacks:", br [] [] ]
+                [ label [ for "models" ] [ text "Models:", br [] [] ]
+                , input
+                    [ type_ "number"
+                    , id "models"
+                    , name "models"
+                    , onInput
+                        (changeStat Models)
+                    ]
+                    []
+                , br [] []
+                , label [ for "attacks" ] [ text "Attacks:", br [] [] ]
                 , input
                     [ type_ "number"
                     , id "attacks"
@@ -133,23 +225,23 @@ viewDamageTable model =
                 ]
             , tr []
                 [ td [] [ text "2+" ]
-                , td [] [ text <| String.fromInt model.damage ]
+                , td [] [ text <| String.fromFloat <| calculateDamage model 2 ]
                 ]
             , tr []
                 [ td [] [ text "3+" ]
-                , td [] [ text <| String.fromInt model.damage ]
+                , td [] [ text <| String.fromFloat <| calculateDamage model 3 ]
                 ]
             , tr []
                 [ td [] [ text "4+" ]
-                , td [] [ text <| String.fromInt model.damage ]
+                , td [] [ text <| String.fromFloat <| calculateDamage model 4 ]
                 ]
             , tr []
                 [ td [] [ text "5+" ]
-                , td [] [ text <| String.fromInt model.damage ]
+                , td [] [ text <| String.fromFloat <| calculateDamage model 5 ]
                 ]
             , tr []
                 [ td [] [ text "6+" ]
-                , td [] [ text <| String.fromInt model.damage ]
+                , td [] [ text <| String.fromFloat <| calculateDamage model 6 ]
                 ]
             ]
         ]
@@ -157,21 +249,28 @@ viewDamageTable model =
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        warscroll =
+            model.warscroll
+    in
     case msg of
+        ModelCountChanged value ->
+            ( { model | modelCount = value }, Cmd.none )
+
         AttacksChanged value ->
-            ( { model | attacks = value }, Cmd.none )
+            ( setWarscroll model { warscroll | attacks = value }, Cmd.none )
 
         ToHitChanged value ->
-            ( { model | toHit = value }, Cmd.none )
+            ( setWarscroll model { warscroll | toHit = value }, Cmd.none )
 
         ToWoundChanged value ->
-            ( { model | toWound = value }, Cmd.none )
+            ( setWarscroll model { warscroll | toWound = value }, Cmd.none )
 
         RendChanged value ->
-            ( { model | rend = value }, Cmd.none )
+            ( setWarscroll model { warscroll | rend = value }, Cmd.none )
 
         DamageChanged value ->
-            ( { model | damage = value }, Cmd.none )
+            ( setWarscroll model { warscroll | damage = value }, Cmd.none )
 
 
 subscriptions : Model -> Sub Msg
@@ -182,7 +281,7 @@ subscriptions _ =
 main : Program () Model Msg
 main =
     element
-        { init = \flags -> ( initialModel, Cmd.none )
+        { init = \_ -> ( initialModel, Cmd.none )
         , view = view
         , update = update
         , subscriptions = subscriptions
