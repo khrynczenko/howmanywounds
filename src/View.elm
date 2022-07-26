@@ -1,9 +1,11 @@
 module View exposing (view)
 
 import Calculator
-import Html exposing (Html, br, div, form, h1, input, label, table, td, text, th, tr)
-import Html.Attributes exposing (class, for, id, name, type_)
-import Html.Events exposing (onInput)
+import Html as Html exposing (Attribute, Html, br, div, form, h1, label, table, td, text, th, tr)
+import Html.Attributes as Attr exposing (class, for)
+import Html.Events exposing (on)
+import Json.Decode as Decode
+import Json.Encode as Encode
 import Message exposing (Msg, UnitFormChanged(..))
 import Model exposing (Model)
 
@@ -17,92 +19,71 @@ type UnitStat
     | Damage
 
 
-changeStat : UnitStat -> String -> Msg
-changeStat stat formText =
+changeStat : UnitStat -> Int -> Msg
+changeStat stat value =
     case stat of
         Models ->
-            ModelCountChanged (Maybe.withDefault 0 (String.toInt formText))
+            ModelCountChanged value
 
         Attacks ->
-            AttacksChanged (Maybe.withDefault 0 (String.toInt formText))
+            AttacksChanged value
 
         ToHit ->
-            ToHitChanged (Maybe.withDefault 0 <| String.toInt formText)
+            ToHitChanged value
 
         ToWound ->
-            ToWoundChanged (Maybe.withDefault 0 <| String.toInt formText)
+            ToWoundChanged value
 
         Rend ->
-            RendChanged (Maybe.withDefault 0 <| String.toInt formText)
+            RendChanged value
 
         Damage ->
-            DamageChanged (Maybe.withDefault 0 <| String.toInt formText)
+            DamageChanged value
+
+
+onSlide : (Int -> msg) -> Attribute msg
+onSlide toMsg =
+    Decode.at [ "detail", "userSlidTo" ] Decode.int
+        |> Decode.map toMsg
+        |> on "slide"
+
+
+viewRangeSlider : List (Attribute msg) -> List (Html msg) -> Html msg
+viewRangeSlider attributes children =
+    Html.node "range-slider" attributes children
+
+
+viewFilter : String -> String -> String -> (Int -> Msg) -> Int -> Html Msg
+viewFilter name description maxValue message magnitude =
+    div [ class "filter-slider" ]
+        [ label [ for name ] [ text description ]
+        , viewRangeSlider
+            [ Attr.max maxValue
+            , Attr.property "val" (Encode.int magnitude)
+            , onSlide message
+            ]
+            []
+        ]
 
 
 view : Model -> Html Msg
 view model =
     div [ class "content" ]
-        [ viewForm, viewDamageTable model ]
+        [ viewForm model, viewDamageTable model ]
 
 
-viewForm : Html Msg
-viewForm =
+viewForm : Model.Unit -> Html Msg
+viewForm unit =
     div []
         [ h1 [] [ text "How Many Wounds" ]
         , div []
             [ form []
-                [ label [ for "models" ] [ text "Models:", br [] [] ]
-                , input
-                    [ type_ "number"
-                    , id "models"
-                    , name "models"
-                    , onInput
-                        (changeStat Models)
-                    ]
-                    []
-                , br [] []
-                , label [ for "attacks" ] [ text "Attacks:", br [] [] ]
-                , input
-                    [ type_ "number"
-                    , id "attacks"
-                    , name "attacks"
-                    , onInput
-                        (changeStat Attacks)
-                    ]
-                    []
-                , br [] []
-                , label [ for "toHit" ] [ text "To hit:", br [] [] ]
-                , input
-                    [ type_ "number"
-                    , id "toHit"
-                    , name "toHit"
-                    , onInput
-                        (changeStat ToHit)
-                    ]
-                    []
-                , br [] []
-                , label [ for "toWound" ] [ text "To wound:", br [] [] ]
-                , input
-                    [ type_ "number"
-                    , id "toWound"
-                    , name "toWound"
-                    , onInput
-                        (changeStat ToWound)
-                    ]
-                    []
-                , br [] []
-                , label [ for "rend" ] [ text "Rend:", br [] [] ]
-                , input
-                    [ type_ "number"
-                    , id "rend"
-                    , name "rend"
-                    , onInput
-                        (changeStat Rend)
-                    ]
-                    []
-                , br [] []
-                , label [ for "damage" ] [ text "Damage:", br [] [] ]
-                , input [ type_ "number", id "damage", name "damage", onInput (changeStat Damage) ] []
+                [ viewFilter "models" "Models:" "100" (changeStat Models) unit.modelCount
+                , viewFilter "attacks" "Attacks:" "6" (changeStat Attacks) unit.warscroll.attacks
+                , viewFilter "toHit" "To hit:" "6" (changeStat ToHit) unit.warscroll.toHit
+                , viewFilter "toWound" "To wound:" "6" (changeStat ToWound) unit.warscroll.toWound
+                , viewFilter "rend" "Rend:" "6" (changeStat Rend) unit.warscroll.rend
+                , viewFilter "damage" "Damage:" "10" (changeStat Damage) unit.warscroll.damage
                 , br [] []
                 ]
             ]
