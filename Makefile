@@ -1,8 +1,11 @@
 format:
-	elm-format --yes src
+	elm-format --yes src tests
 
 lint:
 	elm-analyse
+
+test:
+	elm-test
 
 build:
 	elm make --debug src/Main.elm --output public/app.js
