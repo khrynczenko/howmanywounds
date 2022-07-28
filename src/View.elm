@@ -19,6 +19,11 @@ type UnitStat
     | Damage
 
 
+digitsAfterComma : Int
+digitsAfterComma =
+    2
+
+
 changeStat : UnitStat -> Int -> Msg
 changeStat stat value =
     case stat of
@@ -100,23 +105,54 @@ viewDamageTable model =
                 ]
             , tr []
                 [ td [] [ text "2+" ]
-                , td [] [ text <| String.fromFloat <| Calculator.calculateDamage model 2 ]
+                , td [] [ formatDamage <| Calculator.calculateDamage model 2 ]
                 ]
             , tr []
                 [ td [] [ text "3+" ]
-                , td [] [ text <| String.fromFloat <| Calculator.calculateDamage model 3 ]
+                , td [] [ formatDamage <| Calculator.calculateDamage model 3 ]
                 ]
             , tr []
                 [ td [] [ text "4+" ]
-                , td [] [ text <| String.fromFloat <| Calculator.calculateDamage model 4 ]
+                , td [] [ formatDamage <| Calculator.calculateDamage model 4 ]
                 ]
             , tr []
                 [ td [] [ text "5+" ]
-                , td [] [ text <| String.fromFloat <| Calculator.calculateDamage model 5 ]
+                , td [] [ formatDamage <| Calculator.calculateDamage model 5 ]
                 ]
             , tr []
                 [ td [] [ text "6+" ]
-                , td [] [ text <| String.fromFloat <| Calculator.calculateDamage model 6 ]
+                , td [] [ formatDamage <| Calculator.calculateDamage model 6 ]
                 ]
             ]
         ]
+
+
+formatDamage : Float -> Html Msg
+formatDamage damage =
+    let
+        padLeft =
+            String.padLeft digitsAfterComma '0'
+
+        padRight =
+            String.padRight digitsAfterComma '0'
+
+        splitted =
+            String.split "." <| String.fromFloat damage
+
+        partBeforeComma =
+            case List.head splitted of
+                Just value ->
+                    value
+
+                Nothing ->
+                    "NOT POSSIBLE!"
+
+        partAfterComma =
+            case splitted |> List.reverse |> List.head of
+                Just value ->
+                    String.left digitsAfterComma value
+
+                Nothing ->
+                    ""
+    in
+    text <| padLeft partBeforeComma ++ "." ++ padRight partAfterComma
