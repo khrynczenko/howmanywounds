@@ -10,40 +10,9 @@ import Message exposing (Msg, UnitFormChanged(..))
 import Model exposing (Model)
 
 
-type UnitStat
-    = Models
-    | Attacks
-    | ToHit
-    | ToWound
-    | Rend
-    | Damage
-
-
 digitsAfterComma : Int
 digitsAfterComma =
     2
-
-
-changeStat : UnitStat -> Int -> Msg
-changeStat stat value =
-    case stat of
-        Models ->
-            ModelCountChanged value
-
-        Attacks ->
-            AttacksChanged value
-
-        ToHit ->
-            ToHitChanged value
-
-        ToWound ->
-            ToWoundChanged value
-
-        Rend ->
-            RendChanged value
-
-        Damage ->
-            DamageChanged value
 
 
 onSlide : (Int -> msg) -> Attribute msg
@@ -103,7 +72,7 @@ viewForm model =
                     "6"
                     ToWoundChanged
                     model.unit.warscroll.toWound
-                , viewSlider "rend" "Rend:" "6" (changeStat Rend) model.unit.warscroll.rend
+                , viewSlider "rend" "Rend:" "6" RendChanged model.unit.warscroll.rend
                 , viewSlider "damage"
                     "Damage:"
                     "10"

@@ -17,7 +17,7 @@ testCalculateDamage =
                     { modelCount = 1, warscroll = warscroll }
 
                 enemyModifiers =
-                    { ward = 0 }
+                    { ward = 0, elmAnalyzeBullshit = () }
 
                 calculatedDamage =
                     Calculator.calculateDamage unit 0 enemyModifiers
@@ -32,7 +32,7 @@ testCalculateDamage =
                     { modelCount = 1, warscroll = warscroll }
 
                 enemyModifiers =
-                    { ward = 0 }
+                    { ward = 0, elmAnalyzeBullshit = () }
 
                 calculatedDamage =
                     Calculator.calculateDamage unit 0 enemyModifiers
@@ -47,7 +47,7 @@ testCalculateDamage =
                     { modelCount = 1, warscroll = warscroll }
 
                 enemyModifiers =
-                    { ward = 0 }
+                    { ward = 0, elmAnalyzeBullshit = () }
 
                 calculatedDamage =
                     Calculator.calculateDamage unit 0 enemyModifiers
@@ -62,7 +62,7 @@ testCalculateDamage =
                     { modelCount = 1, warscroll = warscroll }
 
                 enemyModifiers =
-                    { ward = 0 }
+                    { ward = 0, elmAnalyzeBullshit = () }
 
                 calculatedDamage =
                     Calculator.calculateDamage unit 0 enemyModifiers
@@ -77,7 +77,7 @@ testCalculateDamage =
                     { modelCount = 1, warscroll = warscroll }
 
                 enemyModifiers =
-                    { ward = 0 }
+                    { ward = 0, elmAnalyzeBullshit = () }
 
                 calculatedDamage =
                     Calculator.calculateDamage unit 0 enemyModifiers
@@ -92,7 +92,7 @@ testCalculateDamage =
                     { modelCount = 1, warscroll = warscroll }
 
                 enemyModifiers =
-                    { ward = 0 }
+                    { ward = 0, elmAnalyzeBullshit = () }
 
                 calculatedDamage =
                     Calculator.calculateDamage unit 0 enemyModifiers
@@ -107,7 +107,7 @@ testCalculateDamage =
                     { modelCount = 2, warscroll = warscroll }
 
                 enemyModifiers =
-                    { ward = 0 }
+                    { ward = 0, elmAnalyzeBullshit = () }
 
                 calculatedDamage =
                     Calculator.calculateDamage unit 0 enemyModifiers
@@ -122,7 +122,7 @@ testCalculateDamage =
                     { modelCount = 2, warscroll = warscroll }
 
                 enemyModifiers =
-                    { ward = 0 }
+                    { ward = 0, elmAnalyzeBullshit = () }
 
                 calculatedDamage =
                     Calculator.calculateDamage unit 0 enemyModifiers
@@ -137,7 +137,7 @@ testCalculateDamage =
                     { modelCount = 2, warscroll = warscroll }
 
                 enemyModifiers =
-                    { ward = 0 }
+                    { ward = 0, elmAnalyzeBullshit = () }
 
                 calculatedDamage =
                     Calculator.calculateDamage unit 0 enemyModifiers
@@ -152,7 +152,7 @@ testCalculateDamage =
                     { modelCount = 2, warscroll = warscroll }
 
                 enemyModifiers =
-                    { ward = 0 }
+                    { ward = 0, elmAnalyzeBullshit = () }
 
                 calculatedDamage =
                     Calculator.calculateDamage unit 6 enemyModifiers
@@ -167,7 +167,7 @@ testCalculateDamage =
                     { modelCount = 2, warscroll = warscroll }
 
                 enemyModifiers =
-                    { ward = 4 }
+                    { ward = 4, elmAnalyzeBullshit = () }
 
                 calculatedDamage =
                     Calculator.calculateDamage unit 6 enemyModifiers
@@ -182,7 +182,7 @@ testCalculateDamage =
                     { modelCount = 2, warscroll = warscroll }
 
                 enemyModifiers =
-                    { ward = 1 }
+                    { ward = 1, elmAnalyzeBullshit = () }
 
                 calculatedDamage =
                     Calculator.calculateDamage unit 6 enemyModifiers
@@ -197,7 +197,7 @@ testCalculateDamage =
                     { modelCount = 1, warscroll = warscroll }
 
                 enemyModifiers =
-                    { ward = 0 }
+                    { ward = 0, elmAnalyzeBullshit = () }
 
                 calculatedDamage =
                     Calculator.calculateDamage unit 6 enemyModifiers

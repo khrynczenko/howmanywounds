@@ -1,0 +1,32 @@
+name: elm
+
+on: [push, pull_request]
+
+jobs:
+  elm:
+    name: elm
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: checkout repository
+      uses: actions/checkout@v2
+    - name: Install npm
+      run: |
+        sudo apt-get install npm
+    - name: Install elm
+      run: |
+        curl -L -o elm.gz https://github.com/elm/compiler/releases/download/0.19.1/binary-for-linux-64-bit.gz
+        gunzip elm.gz
+        chmod +x elm
+        sudo mv elm /usr/local/bin/
+        npm install -g elm-format
+        npm install -g elm-test
+        npm install -g elm-analyse
+    - name: Run elm-format
+      run: elm-format --validate src tests
+    - name: Run elm-analyse
+      run: elm-analyse
+    - name: Build
+      run: elm make src/Main.elm
+    - name: Run elm-test
+      run: elm-test

@@ -29,6 +29,7 @@ type alias Unit =
 
 type alias EnemyModifiers =
     { ward : Int
+    , elmAnalyzeBullshit : ()
     }
 
 
@@ -77,7 +78,7 @@ initialModel =
             , damage = 0
             }
         }
-    , enemyModifiers = { ward = 0 }
+    , enemyModifiers = { ward = 0, elmAnalyzeBullshit = () }
     , wardEnabled = False
     }
 
@@ -111,11 +112,11 @@ update msg model =
             ( setWarscroll model { warscroll | damage = value }, Cmd.none )
 
         WardChanged value ->
-            ( setEnemyModifiers model { ward = value }, Cmd.none )
+            ( setEnemyModifiers model { ward = value, elmAnalyzeBullshit = () }, Cmd.none )
 
         WardSwitched state ->
             let
                 withZeroWard =
-                    setEnemyModifiers model { ward = 0 }
+                    setEnemyModifiers model { ward = 0, elmAnalyzeBullshit = () }
             in
             ( { withZeroWard | wardEnabled = state }, Cmd.none )
