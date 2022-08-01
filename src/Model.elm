@@ -1,5 +1,6 @@
 module Model exposing
     ( Damage
+    , EnemyModifiers
     , Model
     , Save
     , Unit
@@ -26,9 +27,26 @@ type alias Unit =
     }
 
 
+type alias EnemyModifiers =
+    { ward : Int
+    }
+
+
+setEnemyModifiers : Model -> EnemyModifiers -> Model
+setEnemyModifiers model newModifiers =
+    { model | enemyModifiers = newModifiers }
+
+
 setWarscroll : Model -> Warscroll -> Model
 setWarscroll model warscroll =
-    { model | warscroll = warscroll }
+    let
+        unit =
+            model.unit
+
+        newUnit =
+            { unit | warscroll = warscroll }
+    in
+    { model | unit = newUnit }
 
 
 type alias Warscroll =
@@ -41,19 +59,26 @@ type alias Warscroll =
 
 
 type alias Model =
-    Unit
+    { unit : Unit
+    , enemyModifiers : EnemyModifiers
+    , wardEnabled : Bool
+    }
 
 
 initialModel : Model
 initialModel =
-    { modelCount = 0
-    , warscroll =
-        { attacks = 0
-        , toHit = 0
-        , toWound = 0
-        , rend = 0
-        , damage = 0
+    { unit =
+        { modelCount = 0
+        , warscroll =
+            { attacks = 0
+            , toHit = 0
+            , toWound = 0
+            , rend = 0
+            , damage = 0
+            }
         }
+    , enemyModifiers = { ward = 0 }
+    , wardEnabled = False
     }
 
 
@@ -61,11 +86,14 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
         warscroll =
-            model.warscroll
+            model.unit.warscroll
+
+        unit =
+            model.unit
     in
     case msg of
         ModelCountChanged value ->
-            ( { model | modelCount = value }, Cmd.none )
+            ( { model | unit = { unit | modelCount = value } }, Cmd.none )
 
         AttacksChanged value ->
             ( setWarscroll model { warscroll | attacks = value }, Cmd.none )
@@ -81,3 +109,13 @@ update msg model =
 
         DamageChanged value ->
             ( setWarscroll model { warscroll | damage = value }, Cmd.none )
+
+        WardChanged value ->
+            ( setEnemyModifiers model { ward = value }, Cmd.none )
+
+        WardSwitched state ->
+            let
+                withZeroWard =
+                    setEnemyModifiers model { ward = 0 }
+            in
+            ( { withZeroWard | wardEnabled = state }, Cmd.none )

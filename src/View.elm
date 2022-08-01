@@ -58,8 +58,8 @@ viewRangeSlider attributes children =
     Html.node "range-slider" attributes children
 
 
-viewFilter : String -> String -> String -> (Int -> Msg) -> Int -> Html Msg
-viewFilter name description maxValue message magnitude =
+viewSlider : String -> String -> String -> (Int -> Msg) -> Int -> Html Msg
+viewSlider name description maxValue message magnitude =
     div [ class "filter-slider" ]
         [ label [ for name ] [ text description ]
         , viewRangeSlider
@@ -77,22 +77,78 @@ view model =
         [ viewForm model, viewDamageTable model ]
 
 
-viewForm : Model.Unit -> Html Msg
-viewForm unit =
+viewForm : Model -> Html Msg
+viewForm model =
     div []
         [ h1 [] [ text "How Many Wounds" ]
         , div []
             [ form []
-                [ viewFilter "models" "Models:" "100" (changeStat Models) unit.modelCount
-                , viewFilter "attacks" "Attacks:" "6" (changeStat Attacks) unit.warscroll.attacks
-                , viewFilter "toHit" "To hit:" "6" (changeStat ToHit) unit.warscroll.toHit
-                , viewFilter "toWound" "To wound:" "6" (changeStat ToWound) unit.warscroll.toWound
-                , viewFilter "rend" "Rend:" "6" (changeStat Rend) unit.warscroll.rend
-                , viewFilter "damage" "Damage:" "10" (changeStat Damage) unit.warscroll.damage
+                [ viewSlider "models"
+                    "Models:"
+                    "100"
+                    ModelCountChanged
+                    model.unit.modelCount
+                , viewSlider "attacks"
+                    "Attacks:"
+                    "6"
+                    AttacksChanged
+                    model.unit.warscroll.attacks
+                , viewSlider "toHit"
+                    "To hit:"
+                    "6"
+                    ToHitChanged
+                    model.unit.warscroll.toHit
+                , viewSlider "toWound"
+                    "To wound:"
+                    "6"
+                    ToWoundChanged
+                    model.unit.warscroll.toWound
+                , viewSlider "rend" "Rend:" "6" (changeStat Rend) model.unit.warscroll.rend
+                , viewSlider "damage"
+                    "Damage:"
+                    "10"
+                    DamageChanged
+                    model.unit.warscroll.damage
                 , br [] []
+                , viewEnemyOptionsForm model
                 ]
             ]
         ]
+
+
+viewEnemyOptionsForm : Model -> Html Msg
+viewEnemyOptionsForm model =
+    let
+        wardSlider =
+            viewSlider "enemyWard"
+                "Ward:"
+                "6"
+                WardChanged
+                model.enemyModifiers.ward
+
+        wardOption =
+            div []
+                [ label [ for "wardOption" ] [ text "Enable ward?" ]
+                , Html.input
+                    [ Html.Events.onCheck WardSwitched
+                    , Attr.id
+                        "wardOption"
+                    , Attr.type_ "checkbox"
+                    ]
+                    []
+                ]
+
+        wardPair =
+            if model.wardEnabled then
+                div [ class "filter-slider" ]
+                    [ wardOption
+                    , wardSlider
+                    ]
+
+            else
+                div [ class "filter-slider" ] [ wardOption ]
+    in
+    wardPair
 
 
 viewDamageTable : Model -> Html Msg
@@ -105,23 +161,48 @@ viewDamageTable model =
                 ]
             , tr []
                 [ td [] [ text "2+" ]
-                , td [] [ formatDamage <| Calculator.calculateDamage model 2 ]
+                , td []
+                    [ formatDamage <|
+                        Calculator.calculateDamage model.unit
+                            2
+                            model.enemyModifiers
+                    ]
                 ]
             , tr []
                 [ td [] [ text "3+" ]
-                , td [] [ formatDamage <| Calculator.calculateDamage model 3 ]
+                , td []
+                    [ formatDamage <|
+                        Calculator.calculateDamage model.unit
+                            3
+                            model.enemyModifiers
+                    ]
                 ]
             , tr []
                 [ td [] [ text "4+" ]
-                , td [] [ formatDamage <| Calculator.calculateDamage model 4 ]
+                , td []
+                    [ formatDamage <|
+                        Calculator.calculateDamage model.unit
+                            4
+                            model.enemyModifiers
+                    ]
                 ]
             , tr []
                 [ td [] [ text "5+" ]
-                , td [] [ formatDamage <| Calculator.calculateDamage model 5 ]
+                , td []
+                    [ formatDamage <|
+                        Calculator.calculateDamage model.unit
+                            5
+                            model.enemyModifiers
+                    ]
                 ]
             , tr []
                 [ td [] [ text "6+" ]
-                , td [] [ formatDamage <| Calculator.calculateDamage model 6 ]
+                , td []
+                    [ formatDamage <|
+                        Calculator.calculateDamage model.unit
+                            6
+                            model.enemyModifiers
+                    ]
                 ]
             ]
         ]

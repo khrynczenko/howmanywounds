@@ -1,6 +1,6 @@
 module Calculator exposing (calculateDamage)
 
-import Model exposing (Save, Unit)
+import Model exposing (EnemyModifiers, Save, Unit)
 
 
 convertStatToProbability : Int -> Float
@@ -28,8 +28,8 @@ convertStatToProbability stat =
             0.0
 
 
-calculateDamage : Unit -> Save -> Float
-calculateDamage unit enemySave =
+calculateDamage : Unit -> Save -> EnemyModifiers -> Float
+calculateDamage unit enemySave enemyModifiers =
     let
         attacks =
             toFloat unit.warscroll.attacks
@@ -48,5 +48,15 @@ calculateDamage unit enemySave =
 
         enemySaveProb =
             convertStatToProbability (enemySave + rend)
+
+        enemyWardProb =
+            convertStatToProbability enemyModifiers.ward
     in
-    toFloat unit.modelCount * attacks * ((toHit * toWound * damage) * (1 - enemySaveProb))
+    toFloat unit.modelCount
+        * attacks
+        * ((toHit * toWound * damage)
+            * (1
+                - enemySaveProb
+              )
+          )
+        * (1 - enemyWardProb)
