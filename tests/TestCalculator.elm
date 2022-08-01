@@ -188,4 +188,19 @@ testCalculateDamage =
                     Calculator.calculateDamage unit 6 enemyModifiers
             in
             \_ -> Expect.within (Expect.Absolute 0.01) 0.0 calculatedDamage
+        , Test.test "1+ on everything and no save does full damage" <|
+            let
+                warscroll =
+                    { attacks = 1, toHit = 1, toWound = 1, rend = 1, damage = 2 }
+
+                unit =
+                    { modelCount = 1, warscroll = warscroll }
+
+                enemyModifiers =
+                    { ward = 0 }
+
+                calculatedDamage =
+                    Calculator.calculateDamage unit 6 enemyModifiers
+            in
+            \_ -> Expect.within (Expect.Absolute 0.001) 2.0 calculatedDamage
         ]

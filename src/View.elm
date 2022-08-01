@@ -220,6 +220,9 @@ formatDamage damage =
         splitted =
             String.split "." <| String.fromFloat damage
 
+        tail =
+            List.tail splitted
+
         partBeforeComma =
             case List.head splitted of
                 Just value ->
@@ -229,9 +232,12 @@ formatDamage damage =
                     "NOT POSSIBLE!"
 
         partAfterComma =
-            case splitted |> List.reverse |> List.head of
-                Just value ->
+            case tail of
+                Just (value :: _) ->
                     String.left digitsAfterComma value
+
+                Just [] ->
+                    ""
 
                 Nothing ->
                     ""
