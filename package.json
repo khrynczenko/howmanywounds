@@ -1,7 +1,6 @@
 {
   "name": "howmanywounds",
   "author": "khrynczenko",
-  "version": "0.1.0",
   "description": "Purely for deploying on netlify",
   "scripts": {
     "build": "elm make src/Main.elm --output public/app.js"
