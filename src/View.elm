@@ -1,7 +1,7 @@
 module View exposing (view)
 
 import Calculator
-import Html as Html exposing (Attribute, Html, br, div, form, h1, label, table, td, text, th, tr)
+import Html as Html exposing (Attribute, Html)
 import Html.Attributes as Attr exposing (class, for)
 import Html.Events exposing (on)
 import Json.Decode as Decode
@@ -29,29 +29,41 @@ viewRangeSlider attributes children =
 
 viewSlider : String -> String -> String -> (Int -> Msg) -> Int -> Html Msg
 viewSlider name description maxValue message magnitude =
-    div [ class "filter-slider" ]
-        [ label [ for name ] [ text description ]
-        , viewRangeSlider
-            [ Attr.max maxValue
-            , Attr.property "val" (Encode.int magnitude)
-            , onSlide message
+    Html.div [ Attr.class "field" ]
+        [ Html.label [ for name, Attr.class "label" ] [ Html.text description ]
+        , Html.div [ class "control" ]
+            [ viewRangeSlider
+                [ Attr.max maxValue
+                , Attr.property "val" (Encode.int magnitude)
+                , onSlide message
+                ]
+                []
             ]
-            []
         ]
 
 
 view : Model -> Html Msg
 view model =
-    div [ class "content" ]
-        [ viewForm model, viewDamageTable model ]
+    Html.section [ class "section" ]
+        [ Html.h1 [ class "title" ] [ Html.text "How many wounds" ]
+        , Html.div [ class "container" ]
+            [ Html.div [ class "columns" ]
+                [ Html.div [ class "column is-half" ]
+                    [ viewForm model
+                    ]
+                , Html.div [ class "column" ]
+                    [ viewDamageTable model
+                    ]
+                ]
+            ]
+        ]
 
 
 viewForm : Model -> Html Msg
 viewForm model =
-    div []
-        [ h1 [] [ text "How Many Wounds" ]
-        , div []
-            [ form []
+    Html.div []
+        [ Html.div []
+            [ Html.form []
                 [ viewSlider "models"
                     "Models:"
                     "100"
@@ -78,7 +90,7 @@ viewForm model =
                     "10"
                     DamageChanged
                     model.unit.warscroll.damage
-                , br [] []
+                , Html.br [] []
                 , viewEnemyOptionsForm model
                 ]
             ]
@@ -96,8 +108,8 @@ viewEnemyOptionsForm model =
                 model.enemyModifiers.ward
 
         wardOption =
-            div []
-                [ label [ for "wardOption" ] [ text "Enable ward?" ]
+            Html.div []
+                [ Html.label [ for "wardOption" ] [ Html.text "Enable ward?" ]
                 , Html.input
                     [ Html.Events.onCheck WardSwitched
                     , Attr.id
@@ -109,64 +121,64 @@ viewEnemyOptionsForm model =
 
         wardPair =
             if model.wardEnabled then
-                div [ class "filter-slider" ]
+                Html.div [ class "filter-slider" ]
                     [ wardOption
                     , wardSlider
                     ]
 
             else
-                div [ class "filter-slider" ] [ wardOption ]
+                Html.div [ class "filter-slider" ] [ wardOption ]
     in
     wardPair
 
 
 viewDamageTable : Model -> Html Msg
 viewDamageTable model =
-    div []
-        [ table []
-            [ tr []
-                [ th [] [ text "Save" ]
-                , th [] [ text "Damage" ]
+    Html.div []
+        [ Html.table []
+            [ Html.tr []
+                [ Html.th [] [ Html.text "Save" ]
+                , Html.th [] [ Html.text "Damage" ]
                 ]
-            , tr []
-                [ td [] [ text "2+" ]
-                , td []
+            , Html.tr []
+                [ Html.td [] [ Html.text "2+" ]
+                , Html.td []
                     [ formatDamage <|
                         Calculator.calculateDamage model.unit
                             2
                             model.enemyModifiers
                     ]
                 ]
-            , tr []
-                [ td [] [ text "3+" ]
-                , td []
+            , Html.tr []
+                [ Html.td [] [ Html.text "3+" ]
+                , Html.td []
                     [ formatDamage <|
                         Calculator.calculateDamage model.unit
                             3
                             model.enemyModifiers
                     ]
                 ]
-            , tr []
-                [ td [] [ text "4+" ]
-                , td []
+            , Html.tr []
+                [ Html.td [] [ Html.text "4+" ]
+                , Html.td []
                     [ formatDamage <|
                         Calculator.calculateDamage model.unit
                             4
                             model.enemyModifiers
                     ]
                 ]
-            , tr []
-                [ td [] [ text "5+" ]
-                , td []
+            , Html.tr []
+                [ Html.td [] [ Html.text "5+" ]
+                , Html.td []
                     [ formatDamage <|
                         Calculator.calculateDamage model.unit
                             5
                             model.enemyModifiers
                     ]
                 ]
-            , tr []
-                [ td [] [ text "6+" ]
-                , td []
+            , Html.tr []
+                [ Html.td [] [ Html.text "6+" ]
+                , Html.td []
                     [ formatDamage <|
                         Calculator.calculateDamage model.unit
                             6
@@ -211,4 +223,4 @@ formatDamage damage =
                 Nothing ->
                     ""
     in
-    text <| padLeft partBeforeComma ++ "." ++ padRight partAfterComma
+    Html.text <| padLeft partBeforeComma ++ "." ++ padRight partAfterComma
