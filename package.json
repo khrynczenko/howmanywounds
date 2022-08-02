@@ -1,0 +1,16 @@
+{
+  "name": "howmanywounds",
+  "author": "khrynczenko",
+  "version": "0.1.0",
+  "description": "Purely for deploying on netlify",
+  "scripts": {
+    "build": "elm make src/Main.elm --output public/app.js"
+  },
+  "devDependencies": {
+    "elm": "^0.19.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/khrynczenko/howmanywounds.git"
+  }
+}
