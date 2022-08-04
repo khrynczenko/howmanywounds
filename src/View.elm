@@ -73,7 +73,7 @@ viewForm model =
                     model.unit.modelCount
                 , viewSlider "attacks"
                     "Attacks:"
-                    "6"
+                    "18"
                     AttacksChanged
                     model.unit.warscroll.attacks
                 , viewSlider "toHit"
