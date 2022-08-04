@@ -45,9 +45,9 @@ viewSlider name description maxValue message magnitude =
 view : Model -> Html Msg
 view model =
     Html.section [ class "section" ]
-        [ Html.h1 [ class "title" ] [ Html.text "How many wounds" ]
-        , Html.div [ class "container" ]
-            [ Html.div [ class "columns" ]
+        [ Html.div [ class "container" ]
+            [ Html.h1 [ class "title" ] [ Html.text "How many wounds" ]
+            , Html.div [ class "columns" ]
                 [ Html.div [ class "column is-half" ]
                     [ viewForm model
                     ]
