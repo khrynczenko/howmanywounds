@@ -109,7 +109,7 @@ buildDamageRow model ward =
                     [ formatDamage <|
                         Calculator.calculateDamage model.unit
                             save
-                            { ward = 0
+                            { ward = ward
                             , elmAnalyzeBullshit = ()
                             }
                     ]
