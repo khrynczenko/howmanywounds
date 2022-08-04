@@ -1,6 +1,5 @@
 module Model exposing
     ( Damage
-    , EnemyModifiers
     , Model
     , Save
     , Unit
@@ -27,17 +26,6 @@ type alias Unit =
     }
 
 
-type alias EnemyModifiers =
-    { ward : Int
-    , elmAnalyzeBullshit : ()
-    }
-
-
-setEnemyModifiers : Model -> EnemyModifiers -> Model
-setEnemyModifiers model newModifiers =
-    { model | enemyModifiers = newModifiers }
-
-
 setWarscroll : Model -> Warscroll -> Model
 setWarscroll model warscroll =
     let
@@ -61,7 +49,6 @@ type alias Warscroll =
 
 type alias Model =
     { unit : Unit
-    , enemyModifiers : EnemyModifiers
     , wardEnabled : Bool
     }
 
@@ -78,7 +65,6 @@ initialModel =
             , damage = 0
             }
         }
-    , enemyModifiers = { ward = 0, elmAnalyzeBullshit = () }
     , wardEnabled = False
     }
 
@@ -110,13 +96,3 @@ update msg model =
 
         DamageChanged value ->
             ( setWarscroll model { warscroll | damage = value }, Cmd.none )
-
-        WardChanged value ->
-            ( setEnemyModifiers model { ward = value, elmAnalyzeBullshit = () }, Cmd.none )
-
-        WardSwitched state ->
-            let
-                withZeroWard =
-                    setEnemyModifiers model { ward = 0, elmAnalyzeBullshit = () }
-            in
-            ( { withZeroWard | wardEnabled = state }, Cmd.none )

@@ -92,46 +92,9 @@ viewForm model =
                     "10"
                     DamageChanged
                     model.unit.warscroll.damage
-                , Html.br [] []
-                , viewEnemyOptionsForm model
                 ]
             ]
         ]
-
-
-viewEnemyOptionsForm : Model -> Html Msg
-viewEnemyOptionsForm model =
-    let
-        wardSlider =
-            viewSlider "enemyWard"
-                "Ward:"
-                "6"
-                WardChanged
-                model.enemyModifiers.ward
-
-        wardOption =
-            Html.div []
-                [ Html.label [ for "wardOption" ] [ Html.text "Enable ward?" ]
-                , Html.input
-                    [ Html.Events.onCheck WardSwitched
-                    , Attr.id
-                        "wardOption"
-                    , Attr.type_ "checkbox"
-                    ]
-                    []
-                ]
-
-        wardPair =
-            if model.wardEnabled then
-                Html.div [ class "filter-slider" ]
-                    [ wardOption
-                    , wardSlider
-                    ]
-
-            else
-                Html.div [ class "filter-slider" ] [ wardOption ]
-    in
-    wardPair
 
 
 buildDamageRow : Model -> Int -> Html Msg
@@ -146,7 +109,9 @@ buildDamageRow model ward =
                     [ formatDamage <|
                         Calculator.calculateDamage model.unit
                             save
-                            { ward = ward, elmAnalyzeBullshit = () }
+                            { ward = 0
+                            , elmAnalyzeBullshit = ()
+                            }
                     ]
 
         descriptionCell =
@@ -180,7 +145,7 @@ viewDamageTableCorner =
 
 viewDamageTable : Model -> Html Msg
 viewDamageTable model =
-    Html.div [class "table-container"]
+    Html.div [ class "table-container" ]
         [ Html.table [ class "table is-hoverable is-fullwidth" ]
             [ Html.tbody []
                 [ Html.tr []

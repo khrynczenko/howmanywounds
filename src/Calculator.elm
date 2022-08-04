@@ -1,6 +1,16 @@
-module Calculator exposing (calculateDamage)
+module Calculator exposing (EnemyModifiers, calculateDamage)
 
-import Model exposing (EnemyModifiers, Save, Unit)
+import Model exposing (Save, Unit)
+
+
+type alias Ward =
+    Int
+
+
+type alias EnemyModifiers =
+    { ward : Ward
+    , elmAnalyzeBullshit : ()
+    }
 
 
 convertStatToProbability : Int -> Float

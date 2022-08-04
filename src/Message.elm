@@ -8,8 +8,6 @@ type UnitFormChanged
     | ToWoundChanged Int
     | RendChanged Int
     | DamageChanged Int
-    | WardSwitched Bool
-    | WardChanged Int
 
 
 type alias Msg =
