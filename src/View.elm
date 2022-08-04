@@ -46,13 +46,15 @@ view : Model -> Html Msg
 view model =
     Html.section [ class "section" ]
         [ Html.div [ class "container" ]
-            [ Html.h1 [ class "title" ] [ Html.text "How many wounds" ]
-            , Html.div [ class "columns" ]
-                [ Html.div [ class "column is-half" ]
-                    [ viewForm model
-                    ]
-                , Html.div [ class "column" ]
-                    [ viewDamageTable model
+            [ Html.div [ class "box" ]
+                [ Html.h1 [ class "title" ] [ Html.text "How many wounds" ]
+                , Html.div [ class "columns" ]
+                    [ Html.div [ class "column is-half" ]
+                        [ viewForm model
+                        ]
+                    , Html.div [ class "column" ]
+                        [ viewDamageTable model
+                        ]
                     ]
                 ]
             ]
