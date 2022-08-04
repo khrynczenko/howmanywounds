@@ -52,7 +52,7 @@ view model =
                     [ Html.div [ class "column is-half" ]
                         [ viewForm model
                         ]
-                    , Html.div [ class "column" ]
+                    , Html.div [ class "column is-half" ]
                         [ viewDamageTable model
                         ]
                     ]
@@ -134,58 +134,69 @@ viewEnemyOptionsForm model =
     wardPair
 
 
+buildDamageRow : Model -> Int -> Html Msg
+buildDamageRow model ward =
+    let
+        saves =
+            [ 2, 3, 4, 5, 6 ]
+
+        makeDamageCell =
+            \save ->
+                Html.td []
+                    [ formatDamage <|
+                        Calculator.calculateDamage model.unit
+                            save
+                            { ward = ward, elmAnalyzeBullshit = () }
+                    ]
+
+        descriptionCell =
+            Html.th []
+                [ Html.text <|
+                    (String.fromInt ward ++ "+")
+                ]
+
+        damageCells =
+            List.map makeDamageCell saves
+
+        allCells =
+            descriptionCell :: damageCells
+    in
+    Html.tr [] allCells
+
+
+viewDamageTableCorner : Html Msg
+viewDamageTableCorner =
+    Html.table [ class "is-small m-0 is-size-7", Attr.width 0 ]
+        [ Html.tr []
+            [ Html.td [] [ Html.text "" ]
+            , Html.td [ class "is-pulled-right" ] [ Html.text "Save" ]
+            ]
+        , Html.tr []
+            [ Html.td [ class "is-pulled-right" ] [ Html.text "Ward" ]
+            , Html.td [] [ Html.text "Damage" ]
+            ]
+        ]
+
+
 viewDamageTable : Model -> Html Msg
 viewDamageTable model =
-    Html.div []
-        [ Html.table []
-            [ Html.tr []
-                [ Html.th [] [ Html.text "Save" ]
-                , Html.th [] [ Html.text "Damage" ]
-                ]
-            , Html.tr []
-                [ Html.td [] [ Html.text "2+" ]
-                , Html.td []
-                    [ formatDamage <|
-                        Calculator.calculateDamage model.unit
-                            2
-                            model.enemyModifiers
+    Html.div [class "table-container"]
+        [ Html.table [ class "table is-hoverable is-fullwidth" ]
+            [ Html.tbody []
+                [ Html.tr []
+                    [ Html.th [] [ viewDamageTableCorner ]
+                    , Html.th [] [ Html.text "2+" ]
+                    , Html.th [] [ Html.text "3+" ]
+                    , Html.th [] [ Html.text "4+" ]
+                    , Html.th [] [ Html.text "5+" ]
+                    , Html.th [] [ Html.text "6+" ]
                     ]
-                ]
-            , Html.tr []
-                [ Html.td [] [ Html.text "3+" ]
-                , Html.td []
-                    [ formatDamage <|
-                        Calculator.calculateDamage model.unit
-                            3
-                            model.enemyModifiers
-                    ]
-                ]
-            , Html.tr []
-                [ Html.td [] [ Html.text "4+" ]
-                , Html.td []
-                    [ formatDamage <|
-                        Calculator.calculateDamage model.unit
-                            4
-                            model.enemyModifiers
-                    ]
-                ]
-            , Html.tr []
-                [ Html.td [] [ Html.text "5+" ]
-                , Html.td []
-                    [ formatDamage <|
-                        Calculator.calculateDamage model.unit
-                            5
-                            model.enemyModifiers
-                    ]
-                ]
-            , Html.tr []
-                [ Html.td [] [ Html.text "6+" ]
-                , Html.td []
-                    [ formatDamage <|
-                        Calculator.calculateDamage model.unit
-                            6
-                            model.enemyModifiers
-                    ]
+                , buildDamageRow model 0
+                , buildDamageRow model 2
+                , buildDamageRow model 3
+                , buildDamageRow model 4
+                , buildDamageRow model 5
+                , buildDamageRow model 6
                 ]
             ]
         ]
