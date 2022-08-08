@@ -1,6 +1,7 @@
 module View exposing (view)
 
 import Calculator
+import DamageChart
 import Html as Html exposing (Attribute, Html)
 import Html.Attributes as Attr exposing (class, for)
 import Html.Events exposing (on)
@@ -54,6 +55,9 @@ view model =
                         ]
                     , Html.div [ class "column is-half" ]
                         [ viewDamageTable model
+                        , Html.div [ Attr.class "chart" ]
+                            [ DamageChart.makeChart model
+                            ]
                         ]
                     ]
                 ]
