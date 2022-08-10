@@ -43,6 +43,25 @@ viewSlider name description maxValue message magnitude =
         ]
 
 
+ionIcon : List (Attribute msg) -> List (Html msg) -> Html msg
+ionIcon =
+    Html.node "ion-icon"
+
+
+viewFooter : Html Msg
+viewFooter =
+    Html.div [ Attr.class "block level" ]
+        [ Html.span [ Attr.class "icon-text level-item" ]
+            [ Html.a [ Attr.href "https://www.github.com/khrynczenko/howmanywounds" ]
+                [ Html.span [ Attr.class "icon" ]
+                    [ ionIcon [ Attr.name "logo-github" ] []
+                    ]
+                , Html.span [] [ Html.text " made with Elm" ]
+                ]
+            ]
+        ]
+
+
 view : Model -> Html Msg
 view model =
     Html.section [ class "section" ]
@@ -59,6 +78,10 @@ view model =
                             [ DamageChart.makeChart model
                             ]
                         ]
+                    ]
+                , Html.div [ class "columns" ]
+                    [ Html.div [ class "column is-full" ]
+                        [ viewFooter ]
                     ]
                 ]
             ]
