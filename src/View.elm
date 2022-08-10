@@ -52,10 +52,10 @@ view model =
                 , Html.div [ class "columns" ]
                     [ Html.div [ class "column is-half" ]
                         [ viewForm model
+                        , viewDamageTable model
                         ]
                     , Html.div [ class "column is-half" ]
-                        [ viewDamageTable model
-                        , Html.div [ Attr.class "chart" ]
+                        [ Html.div [ Attr.class "chart" ]
                             [ DamageChart.makeChart model
                             ]
                         ]
