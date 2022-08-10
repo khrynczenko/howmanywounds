@@ -43,6 +43,30 @@ viewSlider name description maxValue message magnitude =
         ]
 
 
+viewFormula : Html Msg
+viewFormula =
+    Html.article [ Attr.class "message formula" ]
+        [ Html.div [ Attr.class "message-header" ]
+            [ Html.p [] [ Html.text "Age of Sigmar" ]
+            ]
+        , Html.div [ Attr.class "message-body" ]
+            [ Html.p []
+                [ Html.text
+                    """
+            Thank you for using this Age of Sigmar average damage
+            calculator! I hope you find it useful. The formula used is as
+            below, where D stands for unit's damage, A for its number of
+            attacks, H for its hit probability, W for wound probability,
+            and S for enemy chance of saving.
+
+            """
+                , Html.hr [] []
+                ]
+            , Html.img [ Attr.src "static/formula.png" ] []
+            ]
+        ]
+
+
 ionIcon : List (Attribute msg) -> List (Html msg) -> Html msg
 ionIcon =
     Html.node "ion-icon"
@@ -76,6 +100,7 @@ view model =
                     , Html.div [ class "column is-half" ]
                         [ Html.div [ Attr.class "chart" ]
                             [ DamageChart.makeChart model
+                            , viewFormula
                             ]
                         ]
                     ]
