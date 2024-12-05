@@ -2,7 +2,7 @@ module View exposing (view)
 
 import Calculator
 import DamageChart
-import Html as Html exposing (Attribute, Html)
+import Html exposing (Attribute, Html)
 import Html.Attributes as Attr exposing (class, for)
 import Html.Events exposing (on)
 import Json.Decode as Decode

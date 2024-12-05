@@ -1,7 +1,7 @@
 module TestCalculator exposing (..)
 
 import Calculator
-import Expect as Expect
+import Expect
 import Test exposing (..)
 
 
